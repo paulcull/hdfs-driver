@@ -1,0 +1,277 @@
+<!-- Chosen Palette: Corporate Professional -->
+<!-- Application Structure Plan: A two-column layout with a sticky sidebar navigation was chosen to mirror the structure of formal technical documentation, providing a familiar and user-friendly experience. This is superior to a long-scrolling document as it allows users to jump directly to any section (Requirements, Epic, etc.) instantly. The central "Epic" is presented as an interactive accordion, which lets users see the high-level plan and drill into specific story details, mimicking the workflow of project management tools. -->
+<!-- Visualization & Content Choices: Report Info: Epic & Stories -> Goal: Organize/Show Process -> Viz: Interactive Accordion with Checklists -> Interaction: Click to expand/collapse stories and check items -> Justification: This transforms a flat list of tasks into an engaging, interactive project plan. | Report Info: Key Goals -> Goal: Inform -> Viz: Key Stat Cards with Icons -> Interaction: Static -> Justification: Highlights the most critical project metrics at the top for immediate stakeholder alignment. No Chart.js was used as the PRD is text-based; visualizing the project structure interactively is more effective. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive PRD | HDFS Abstraction Layer PoC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link.active { color: #2563EB; background-color: #EFF6FF; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .accordion-header.open .accordion-icon { transform: rotate(90deg); }
+        .checklist-item.checked .checkbox-icon { background-color: #2563EB; border-color: #2563EB; }
+        .checklist-item.checked span { text-decoration: line-through; color: #64748b; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="lg:flex lg:space-x-8 py-12">
+            <aside class="lg:w-1/4 xl:w-1/5">
+                <nav id="sidebar-nav" class="sticky top-8 space-y-2">
+                    <h3 class="font-bold text-lg text-slate-900 px-3">PRD Sections</h3>
+                    <a href="#goals" class="nav-link group flex items-center px-3 py-2 text-sm font-medium text-slate-700 rounded-md hover:text-blue-600 hover:bg-slate-100">
+                        <span class="truncate">Goals & Background</span>
+                    </a>
+                    <a href="#requirements" class="nav-link group flex items-center px-3 py-2 text-sm font-medium text-slate-700 rounded-md hover:text-blue-600 hover:bg-slate-100">
+                        <span class="truncate">Requirements</span>
+                    </a>
+                    <a href="#tech" class="nav-link group flex items-center px-3 py-2 text-sm font-medium text-slate-700 rounded-md hover:text-blue-600 hover:bg-slate-100">
+                        <span class="truncate">Technical Plan</span>
+                    </a>
+                    <a href="#epic" class="nav-link group flex items-center px-3 py-2 text-sm font-medium text-slate-700 rounded-md hover:text-blue-600 hover:bg-slate-100">
+                        <span class="truncate">The PoC Epic</span>
+                    </a>
+                    <a href="#next-steps" class="nav-link group flex items-center px-3 py-2 text-sm font-medium text-slate-700 rounded-md hover:text-blue-600 hover:bg-slate-100">
+                        <span class="truncate">Next Steps</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <main class="flex-1 min-w-0">
+                <header class="mb-12">
+                    <p class="text-base font-semibold text-blue-600">Product Requirements Document</p>
+                    <h1 class="mt-2 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">HDFS Abstraction Layer PoC</h1>
+                    <p class="mt-4 text-lg text-slate-600">This document translates the project brief into a detailed, actionable plan for the Proof of Concept.</p>
+                </header>
+
+                <div class="space-y-12">
+                    <section id="goals" class="scroll-mt-20">
+                        <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+                            <h2 class="text-2xl font-bold text-slate-900 border-b pb-3 mb-6">Goals & Background Context</h2>
+                            <p class="text-slate-600 mb-6">Our data platform's modernization is currently blocked by the high cost and risk associated with refactoring applications tightly coupled to the HDFS API. This PoC is a time-boxed experiment to de-risk the full migration project by validating Alluxio as a viable abstraction layer.</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="bg-slate-100 p-4 rounded-lg flex items-start">
+                                    <span class="text-2xl mr-3">🎯</span>
+                                    <div><strong class="text-slate-800">Validate Feasibility:</strong> Prove Alluxio can unify HDFS and S3 into a single namespace.</div>
+                                </div>
+                                <div class="bg-slate-100 p-4 rounded-lg flex items-start">
+                                    <span class="text-2xl mr-3">⚡️</span>
+                                    <div><strong class="text-slate-800">Meet Performance:</strong> Confirm &lt;10% performance overhead vs. native HDFS.</div>
+                                </div>
+                                <div class="bg-slate-100 p-4 rounded-lg flex items-start">
+                                    <span class="text-2xl mr-3">💎</span>
+                                    <div><strong class="text-slate-800">Ensure Transparency:</strong> No application code changes should be required.</div>
+                                </div>
+                                <div class="bg-slate-100 p-4 rounded-lg flex items-start">
+                                    <span class="text-2xl mr-3">➡️</span>
+                                    <div><strong class="text-slate-800">Confirm Routing:</strong> Verify seamless request routing to HDFS or S3.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section id="requirements" class="scroll-mt-20">
+                         <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+                            <h2 class="text-2xl font-bold text-slate-900 border-b pb-3 mb-6">Requirements</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <h3 class="font-semibold text-lg text-slate-800 mb-3">Functional Requirements</h3>
+                                    <ul class="space-y-2 text-slate-700 list-decimal list-inside">
+                                        <li>Provide a single, HDFS-compatible endpoint.</li>
+                                        <li>Mount both HDFS and S3 as underlying storage systems.</li>
+                                        <li>Transparently route API calls based on file path.</li>
+                                        <li>Support representative Spark workloads.</li>
+                                        <li>Support representative batch Hadoop workloads.</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg text-slate-800 mb-3">Non-Functional Requirements</h3>
+                                    <ul class="space-y-2 text-slate-700 list-decimal list-inside">
+                                        <li>**Performance:** &lt;10% overhead on a cold cache.</li>
+                                        <li>**Transparency:** No app code changes beyond config URI.</li>
+                                        <li>**Operability:** Provide adequate logs and metrics for the PoC.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="tech" class="scroll-mt-20">
+                         <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+                            <h2 class="text-2xl font-bold text-slate-900 border-b pb-3 mb-6">Technical Plan</h2>
+                             <p class="text-slate-600 mb-6">The PoC will exclusively use the open-source version of Alluxio, managed in a single monorepo. Validation will be achieved through a full testing pyramid on dedicated infrastructure.</p>
+                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
+                                 <div class="bg-slate-100 p-5 rounded-lg">
+                                     <h3 class="font-semibold text-slate-900">Primary Technology</h3>
+                                     <p class="text-slate-600 text-sm mt-1">Alluxio (Open Source)</p>
+                                 </div>
+                                 <div class="bg-slate-100 p-5 rounded-lg">
+                                     <h3 class="font-semibold text-slate-900">Repo Structure</h3>
+                                     <p class="text-slate-600 text-sm mt-1">Monorepo</p>
+                                 </div>
+                                 <div class="bg-slate-100 p-5 rounded-lg">
+                                     <h3 class="font-semibold text-slate-900">Infrastructure</h3>
+                                     <p class="text-slate-600 text-sm mt-1">VMs or Kubernetes Pods</p>
+                                 </div>
+                             </div>
+                        </div>
+                    </section>
+
+                    <section id="epic" class="scroll-mt-20">
+                         <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+                            <h2 class="text-2xl font-bold text-slate-900 border-b pb-3 mb-6">Epic: PoC Implementation & Validation</h2>
+                            <p class="text-slate-600 mb-6">This epic covers all work required to deploy, configure, and benchmark the Alluxio cluster to make a data-driven go/no-go decision. Click each story to see its acceptance criteria.</p>
+                            <div id="accordion-container" class="space-y-3">
+                                <!-- Stories will be injected here by JS -->
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section id="next-steps" class="scroll-mt-20">
+                         <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg">
+                            <h2 class="text-xl font-bold text-blue-900">Next Steps: Architect Handoff</h2>
+                            <p class="mt-2 text-blue-800">This PRD provides the complete requirements. The next step is for the Architect to create a detailed technical design and implementation plan based on the following prompt:</p>
+                            <div class="mt-4 bg-white p-4 rounded-md border border-blue-200 text-sm text-slate-700 italic">
+                                "Winston, please use this PRD to create a detailed **Architecture and Implementation Plan** for the Alluxio Proof of Concept. Your plan should include: Specific infrastructure requirements (VM specs, networking), a detailed deployment plan, configuration specifics for mounting HDFS and S3, the definition and setup of the benchmark jobs, and a test plan for executing the benchmarks and collecting metrics."
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const storiesData = [
+                {
+                    title: "1.1: Deploy the Alluxio Cluster",
+                    content: "As a Data Engineer, I want to deploy a stable, multi-node Alluxio cluster, so that I have a functional environment for testing the HDFS-S3 abstraction.",
+                    acceptanceCriteria: [
+                        "An Alluxio cluster (1 Master, 3 Workers) is successfully deployed on dedicated infrastructure.",
+                        "Alluxio services are running and healthy, accessible from our test client machines.",
+                        "Cluster management UIs are accessible.",
+                        "Basic file system operations can be performed against the empty Alluxio namespace."
+                    ]
+                },
+                {
+                    title: "1.2: Configure Unified Storage",
+                    content: "As a Data Engineer, I want to mount both the legacy HDFS cluster and the VAST Data S3 bucket into the Alluxio namespace, so that data from both sources is visible under a single logical view.",
+                    acceptanceCriteria: [
+                        "The legacy HDFS cluster is successfully mounted as a UFS at `/hdfs`.",
+                        "The VAST Data S3 bucket is successfully mounted as a UFS at `/s3`.",
+                        "Data from both sources is visible and accessible within Alluxio.",
+                        "A test file can be successfully read from both paths via Alluxio."
+                    ]
+                },
+                {
+                    title: "1.3: Execute & Benchmark Spark Workload",
+                    content: "As a Data Engineer, I want to execute and benchmark a representative read-heavy Spark job through Alluxio, so that I can validate its performance and compatibility against our primary analytics workload.",
+                    acceptanceCriteria: [
+                        "A representative Spark job runs successfully against data in Alluxio.",
+                        "Job runtime is measured for both cold and warm cache scenarios.",
+                        "The cold cache result meets the <10% overhead requirement.",
+                        "The job completes with the correct output."
+                    ]
+                },
+                {
+                    title: "1.4: Execute & Benchmark Batch Workload",
+                    content: "As a Data Engineer, I want to execute and benchmark a representative write-heavy batch job through Alluxio, so that I can validate its performance for data ingestion and ETL processes.",
+                    acceptanceCriteria: [
+                        "A representative batch job runs successfully writing output via Alluxio.",
+                        "Job runtime is measured.",
+                        "The performance result meets the <10% overhead requirement.",
+                        "The job writes the correct output data to the specified UFS."
+                    ]
+                },
+                {
+                    title: "1.5: Analyze Results and Create Final Report",
+                    content: "As a Product Owner, I want a final report documenting the PoC findings, including all performance benchmarks and operational learnings, so that we can make a data-driven go/no-go decision on using Alluxio in production.",
+                    acceptanceCriteria: [
+                        "A final report contains all performance benchmark results.",
+                        "The report includes a clear comparison against the baseline and success metric.",
+                        "The report documents final configuration and operational learnings.",
+                        "The report concludes with a clear go/no-go recommendation."
+                    ]
+                }
+            ];
+
+            const accordionContainer = document.getElementById('accordion-container');
+            storiesData.forEach(story => {
+                const item = document.createElement('div');
+                item.className = 'border border-slate-200 rounded-lg';
+                let criteriaHtml = story.acceptanceCriteria.map(ac => `
+                    <li class="checklist-item flex items-start p-2 rounded-md hover:bg-slate-50 cursor-pointer">
+                        <div class="checkbox-icon w-5 h-5 rounded-md border-2 border-slate-300 mr-3 mt-1 flex-shrink-0 flex items-center justify-center"></div>
+                        <span>${ac}</span>
+                    </li>
+                `).join('');
+
+                item.innerHTML = `
+                    <div class="accordion-header flex justify-between items-center p-4 cursor-pointer">
+                        <h4 class="font-semibold text-slate-800">${story.title}</h4>
+                        <span class="accordion-icon transition-transform duration-200 text-slate-500">▶</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="p-4 border-t border-slate-200">
+                            <p class="text-slate-600 mb-4 italic">${story.content}</p>
+                            <h5 class="font-semibold text-sm text-slate-700 mb-2">Acceptance Criteria</h5>
+                            <ul class="space-y-1">${criteriaHtml}</ul>
+                        </div>
+                    </div>
+                `;
+                accordionContainer.appendChild(item);
+            });
+            
+            accordionContainer.addEventListener('click', e => {
+                const header = e.target.closest('.accordion-header');
+                if (header) {
+                    header.classList.toggle('open');
+                    const content = header.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                }
+
+                const checkListItem = e.target.closest('.checklist-item');
+                if (checkListItem) {
+                    checkListItem.classList.toggle('checked');
+                    const icon = checkListItem.querySelector('.checkbox-icon');
+                    if (checkListItem.classList.contains('checked')) {
+                         icon.innerHTML = '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>';
+                    } else {
+                        icon.innerHTML = '';
+                    }
+                }
+            });
+
+            // Sidebar navigation scrollspy
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('#sidebar-nav .nav-link');
+            
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => observer.observe(section));
+        });
+    </script>
+</body>
+</html>
